@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <signal.h>
 
 int main(int argc, char **argv)
 {
@@ -10,6 +12,9 @@ int main(int argc, char **argv)
         fprintf(stderr, "Must have at least one argument after command!");
         exit(EXIT_FAILURE);
     }
+
+    pid_t child_pid, wpid;
+    int status = 0;
 
     // for 1st to 2nd last commands
     int i;
@@ -26,7 +31,7 @@ int main(int argc, char **argv)
         }
 
         // run the process in a forked child process, not the parent
-        if (fork() == 0)
+        if ((child_pid = fork()) == 0)
         {
             // map the write end of the pipe to stdout of the parent process
             dup2(pipefd[1], 1);
@@ -38,9 +43,12 @@ int main(int argc, char **argv)
             perror("execlp");
             exit(EXIT_FAILURE);
 
-            // if execlp succeeded, the parent process will wait for the child process to finish
-            wait(NULL);
+            exit(EXIT_SUCCESS);
         }
+
+        
+        // parent wait for child to finish
+        waitpid(child_pid, &status, NULL);
 
         // map the read end of the pipe to stdin of the parent process
         // allows next child process to read from output of the current child process

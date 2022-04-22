@@ -25,11 +25,8 @@ int main(int argc, char **argv)
             exit(EXIT_FAILURE);
         }
 
-        // fork a child process
-        pid_t pid = fork();
-
-        // run the process in the child process, not the parent
-        if (pid == 0)
+        // run the process in a forked child process, not the parent
+        if (fork() == 0)
         {
             // map the write end of the pipe to stdout of the parent process
             dup2(pipefd[1], 1);

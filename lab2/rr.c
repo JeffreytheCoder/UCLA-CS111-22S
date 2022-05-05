@@ -136,7 +136,6 @@ void init_processes(const char *path,
     (*process_data)[i].pid = next_int(&data, data_end);
     (*process_data)[i].arrival_time = next_int(&data, data_end);
     (*process_data)[i].burst_time = next_int(&data, data_end);
-    printf("%d %d %d\n", (*process_data)[i].pid, (*process_data)[i].arrival_time, (*process_data)[i].burst_time);
   }
 
   munmap((void *)data, size);

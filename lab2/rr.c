@@ -136,7 +136,6 @@ void init_processes(const char *path,
     (*process_data)[i].pid = next_int(&data, data_end);
     (*process_data)[i].arrival_time = next_int(&data, data_end);
     (*process_data)[i].burst_time = next_int(&data, data_end);
-    printf("%d %d %d\n", (*process_data)[i].pid, (*process_data)[i].arrival_time, (*process_data)[i].burst_time);
   }
 
   munmap((void *)data, size);
@@ -179,17 +178,25 @@ int main(int argc, char *argv[])
 
   while (proc_left > 0)
   {
+    // printf("Time %dm running process %d\n", cur_time, cur_proc + 1);
     // if the current process is not finished
     if (procs_time_left[cur_proc] > 0)
     {
+      // add to response time if the current process is runned the first time
+      if (procs_time_left[cur_proc] == data[cur_proc].burst_time)
+      {
+        total_response_time += cur_time - data[cur_proc].arrival_time;
+        // printf("Process %d response time: %d\n", cur_proc + 1, cur_time - data[cur_proc].arrival_time);
+      }
       // if the time left for the current process is less than the quantum length
       // elapse the process left time and update total waiting and response time
       if (procs_time_left[cur_proc] <= quantum_length)
       {
         cur_time += procs_time_left[cur_proc];
+        procs_time_left[cur_proc] = 0;
         proc_left--;
         total_waiting_time += cur_time - data[cur_proc].arrival_time - data[cur_proc].burst_time;
-        total_response_time += cur_time - data[cur_proc].arrival_time;
+        // printf("Process %d waiting time: %d\n", cur_proc + 1, cur_time - data[cur_proc].arrival_time - data[cur_proc].burst_time);
       }
       // if the time left for the current process is greater than the quantum length
       // elapse the quantum length and decrease the time left for the current process

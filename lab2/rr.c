@@ -163,15 +163,6 @@ int main(int argc, char *argv[])
   u32 total_response_time = 0;
 
   /* Your code here */
-  // struct process *current;
-  // TAILQ_FOREACH(current, &list, pointers)
-
-  // create an array of time left for each process
-  // int procs_time_left[size];
-  // for (int i = 0; i < size; i++)
-  // {
-  //   procs_time_left[i] = data[i].burst_time;
-  // }
 
   // init remaining time to burst time for each process
   struct process *proc;
@@ -182,10 +173,7 @@ int main(int argc, char *argv[])
     proc->quantum_time = quantum_length;
   }
 
-  // int proc_left = size;
   int cur_time = 0;
-  // int cur_proc = 0;
-  // int cur_elapse = 0;
   int finished = false;
 
   // add arrived process at time 0 to queue
@@ -200,28 +188,16 @@ int main(int argc, char *argv[])
 
   while (!finished)
   {
-    // printf("\nTime: %d\n", cur_time);
-    // add arrived process at current time
-    // for (int i = 0; i < size; i++)
-    // {
-    //   if (data[i].arrival_time == cur_time)
-    //   {
-    //     TAILQ_INSERT_TAIL(&list, &data[i], pointers);
-    //     printf("Added process %d\n", data[i].pid);
-    //   }
-    // }
-
     // printf("Processes in queue: ");
-    struct process *start_proc;
-    TAILQ_FOREACH(start_proc, &list, pointers)
-    {
-      // printf("%d ", start_proc->pid);
-    }
+    // struct process *start_proc;
+    // TAILQ_FOREACH(start_proc, &list, pointers)
+    // {
+    //   printf("%d ", start_proc->pid);
+    // }
     // printf("\n");
 
     // pop the first process from the queue
     struct process *top_proc = TAILQ_FIRST(&list);
-    // cur_proc = top_proc->pid - 1;
 
     // printf("Running process %d\n", top_proc->pid);
 
@@ -235,66 +211,6 @@ int main(int argc, char *argv[])
     // run the process for 1 time slice
     top_proc->remaining_time -= 1;
     top_proc->quantum_time -= 1;
-
-    // if the current process is not finished
-    // if (top_proc->remaining_time > 0)
-    // {
-
-    //   // if the time left for the current process is less than the quantum length
-    //   // elapse the process left time and update total waiting and response time
-    //   // add to queue again
-    //   if (procs_time_left[cur_proc] <= quantum_length)
-    //   {
-    //     cur_time += procs_time_left[cur_proc];
-    //     cur_elapse = procs_time_left[cur_proc];
-    //     procs_time_left[cur_proc] = 0;
-    //     // proc_left--;
-
-    //     total_waiting_time += cur_time - (*top_proc).arrival_time - (*top_proc).burst_time;
-    //     printf("Process %d waiting time: %d\n", cur_proc + 1, cur_time - (*top_proc).arrival_time - (*top_proc).burst_time);
-    //   }
-    //   // if the time left for the current process is greater than the quantum length
-    //   // elapse the quantum length and decrease the time left for the current process
-    //   else
-    //   {
-    //     cur_time += quantum_length;
-    //     procs_time_left[cur_proc] -= quantum_length;
-    //     cur_elapse = quantum_length;
-    //   }
-    // }
-
-    // // go to next process
-    // // if the current process is last process, go to the first one
-    // if (cur_proc == size - 1)
-    // {
-    //   cur_proc = 0;
-    // }
-    // // if the next process has arrived, go to the next process
-    // else if (data[cur_proc + 1].arrival_time <= cur_time)
-    // {
-    //   cur_proc++;
-    // }
-    // // if the next process has not arrived, go to the first process
-    // else
-    // {
-    //   cur_proc = 0;
-    // }
-
-    // add arrived process to queue by ascending arrived time
-    // for (int elapse = cur_time - cur_elapse; elapse <= cur_time; elapse++)
-    // {
-    //   for (int i = 0; i < size; i++)
-    //   {
-    //     if (data[i].pid != cur_proc + 1 && data[i].arrival_time == elapse)
-    //     {
-    //       TAILQ_INSERT_TAIL(&list, &data[i], pointers);
-    //       printf("\nAdded process %d to queue\n", data[i].pid);
-    //     }
-    //   }
-    // }
-
-    // if current process is finished, add to waiting time
-    // else, add to tail of queue
     // printf("Process %d left time: %d, quantum time left: %d\n", top_proc->pid, top_proc->remaining_time, top_proc->quantum_time);
     TAILQ_REMOVE(&list, top_proc, pointers);
 
@@ -310,22 +226,9 @@ int main(int argc, char *argv[])
       }
     }
 
-    // printf("\nProcesses in queue: ");
-    // struct process *traverse_proc;
-    // TAILQ_FOREACH(traverse_proc, &list, pointers)
-    // {
-    //   printf("%d ", traverse_proc->pid);
-    // }
-    // printf("\n");
-
-    // if (cur_time > 0)
-    // {
-    //   break;
-    // }
-
     cur_time += 1;
 
-    // add arrived process at current time
+    // add arrived process at next time
     for (int i = 0; i < size; i++)
     {
       if (data[i].arrival_time == cur_time)
@@ -346,7 +249,7 @@ int main(int argc, char *argv[])
     {
       TAILQ_INSERT_HEAD(&list, top_proc, pointers);
     }
-    // if the current process used up quantum time, add to tail of queue
+    // if the current process used up quantum time, reset quantum time and add to tail of queue
     else
     {
       top_proc->quantum_time = quantum_length;

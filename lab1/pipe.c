@@ -46,8 +46,7 @@ int main(int argc, char **argv)
             exit(EXIT_SUCCESS);
         }
 
-        
-        // parent wait for child to finish
+                // parent wait for child to finish
         waitpid(child_pid, &status, NULL);
 
         // map the read end of the pipe to stdin of the parent process

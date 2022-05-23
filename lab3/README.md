@@ -1,20 +1,23 @@
 # Hash Hash Hash
 
-One line description of this code.
+This code implements mutex to prevent race condition of modifying hash table in multi-core scenarios.
 
 ## Building
 
-Explain briefly how to build your program.
+The code uses pthread_mutex_t in pthread library to implement lock.
 
 ## Running
 
 Show an example run of your (completed) program on using the `-t` and `-s` flags
 of a run where the base hash table completes in between 1-2 seconds.
 
+
+
 ## First Implementation
 
-Describe your first implementation strategy here (the one with a single mutex).
-Argue why your strategy is correct.
+In v1, I have a single lock using pthread_mutex_t. Whenever a thread or a process calls add_entry function, the code first tries to obtain the lock. If it fails, the function returns immediately. If it succeeds, the thread or process unlocks the lock at the end of the function.
+
+The v1 approach makes sure only one thread/process is modifying the hash table, preventing race condition.
 
 ### Performance
 
@@ -25,8 +28,11 @@ remain constant. Explain any differences between the two.
 
 ## Second Implementation
 
-Describe your second implementation strategy here (the one with a multiple
-mutexes). Argue why your strategy is correct.
+The v1 approach makes parallelism useless since only one thread/process is allowed to obtain the lock and modify the hash table.
+
+So in v2, I add a lock in the hash_table_entry struct. When a thread/process calls add_entry, the code first tries to obtain the lock under the specific hash table entry that the thread/process wants to modify. If it fails, the function returns immediately. If it succeeds, the thread or process unlocks the lock at the end of the function.
+
+The v2 approach makes sure only one thread/process is modifying a certain hash table entry, preventing race condition while allowing modifying different entries in parallel.
 
 ### Performance
 
@@ -39,4 +45,4 @@ implementation and your first, which respect why you get a performance increase.
 
 ## Cleaning up
 
-Explain briefly how to clean up all binary files.
+Run "make clean" to clean up all binary files.

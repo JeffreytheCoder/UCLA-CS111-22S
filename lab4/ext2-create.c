@@ -227,7 +227,7 @@ void write_superblock(int fd)
 	superblock.s_frags_per_group = BLOCK_SIZE * 8;
 	superblock.s_inodes_per_group = NUM_INODES;
 	superblock.s_mtime = 0;								 /* Mount time */
-	superblock.s_wtime = 0;								 /* Write time */
+	superblock.s_wtime = current_time;		 /* Write time */
 	superblock.s_mnt_count = 0;						 /* Number of times mounted so far */
 	superblock.s_max_mnt_count = 0;				 /* Make this unlimited */
 	superblock.s_magic = EXT2_SUPER_MAGIC; /* ext2 Signature */

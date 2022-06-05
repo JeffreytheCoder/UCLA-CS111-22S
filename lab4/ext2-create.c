@@ -433,8 +433,12 @@ void write_inode_table(int fd)
 	hello_inode.i_dtime = 0;
 	hello_inode.i_gid = 1000;
 	hello_inode.i_links_count = 1;
-	hello_inode.i_blocks = 0;														 /* These are oddly 512 blocks */
-	strcpy((char *)&hello_inode.i_block, "hello-world"); // create a symlink to hello-world
+	hello_inode.i_blocks = 0; /* These are oddly 512 blocks */
+
+	// hello-world in bytes is 68 65 6c 6c 6f 2d 77 6f 72 6c 64
+	hello_inode.i_block[0] = 0x68656c6c;
+	hello_inode.i_block[1] = 0x6f2d776f;
+	hello_inode.i_block[2] = 0x726c64;
 	write_inode(fd, HELLO_INO, &hello_inode);
 }
 

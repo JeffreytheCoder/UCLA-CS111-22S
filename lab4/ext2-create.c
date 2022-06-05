@@ -493,8 +493,8 @@ void write_hello_world_file_block(int fd)
 
 	ssize_t bytes_remaining = BLOCK_SIZE;
 
-	char *hello_world_str[12] = "Hello world\n";
-	if (write(fd, &hello_world_str, sizeof(&hello_world_str)) == -1)
+	char hello_world_str[12] = "Hello world\n";
+	if (write(fd, hello_world_str, sizeof(hello_world_str)) == -1)
 	{
 		errno_exit("write");
 	}

@@ -213,8 +213,6 @@ void write_superblock(int fd)
 
 	struct ext2_superblock superblock = {0};
 
-	/* These are intentionally incorrectly set as 0, you should set them
-		 correctly and delete this comment */
 	superblock.s_inodes_count = NUM_INODES;
 	superblock.s_blocks_count = NUM_BLOCKS;
 	superblock.s_r_blocks_count = 0;
@@ -241,8 +239,6 @@ void write_superblock(int fd)
 	superblock.s_def_resuid = 0;					 /* root */
 	superblock.s_def_resgid = 0;					 /* root */
 
-	/* You can leave everything below this line the same, delete this
-		 comment when you're done the lab */
 	superblock.s_uuid[0] = 0x5A;
 	superblock.s_uuid[1] = 0x1E;
 	superblock.s_uuid[2] = 0xAB;
@@ -279,8 +275,6 @@ void write_block_group_descriptor_table(int fd)
 
 	struct ext2_block_group_descriptor block_group_descriptor = {0};
 
-	/* These are intentionally incorrectly set as 0, you should set them
-		 correctly and delete this comment */
 	block_group_descriptor.bg_block_bitmap = BLOCK_BITMAP_BLOCKNO;
 	block_group_descriptor.bg_inode_bitmap = INODE_BITMAP_BLOCKNO;
 	block_group_descriptor.bg_inode_table = INODE_TABLE_BLOCKNO;
@@ -392,9 +386,6 @@ void write_inode_table(int fd)
 	lost_and_found_inode.i_block[0] = LOST_AND_FOUND_DIR_BLOCKNO;
 	write_inode(fd, LOST_AND_FOUND_INO, &lost_and_found_inode);
 
-	/* You should add your 3 other inodes in this function and delete this
-		 comment */
-
 	// create root inode
 	struct ext2_inode root_inode = {0};
 	root_inode.i_mode = EXT2_S_IFDIR | EXT2_S_IRUSR | EXT2_S_IWUSR | EXT2_S_IXUSR | EXT2_S_IRGRP | EXT2_S_IXGRP | EXT2_S_IROTH | EXT2_S_IXOTH;
@@ -439,14 +430,10 @@ void write_inode_table(int fd)
 	hello_inode.i_blocks = 0; /* These are oddly 512 blocks */
 
 	// hello-world in bytes is 68 65 6c 6c 6f s2d 77 6f 72 6c 64
-	// hello_inode.i_block[0] = 0x68656c6c;
-	// hello_inode.i_block[1] = 0x6f2d776f;
-	// hello_inode.i_block[2] = 0x726c64;
 	// reverse the bytes because of the endian
 	hello_inode.i_block[0] = 0x6C6C6568;
 	hello_inode.i_block[1] = 0x6F772D6F;
 	hello_inode.i_block[2] = 0x00646C72;
-	// strcpy((char *)&hello_inode.i_block, "hello-world");
 	write_inode(fd, HELLO_INO, &hello_inode);
 }
 

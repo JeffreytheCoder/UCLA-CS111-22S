@@ -446,7 +446,7 @@ void write_inode_table(int fd)
 	hello_inode.i_block[0] = 0x6C6C6568;
 	hello_inode.i_block[1] = 0x6F772D6F;
 	hello_inode.i_block[2] = 0x00646C72;
-	strcpy((char *)&hello_inode.i_block, "hello-world");
+	// strcpy((char *)&hello_inode.i_block, "hello-world");
 	write_inode(fd, HELLO_INO, &hello_inode);
 }
 

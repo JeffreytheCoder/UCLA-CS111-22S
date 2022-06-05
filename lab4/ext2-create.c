@@ -309,17 +309,19 @@ void write_block_bitmap(int fd)
 	{
 		block_bitmap[i / 8] |= 1 << (i % 8);
 	}
-	ssize_t size = sizeof(block_bitmap);
-	block_bitmap[size - 1] = 1 << 7;
-	if (write(fd, &block_bitmap, size) != size)
+
+	ssize_t bitmap_size = sizeof(block_bitmap);
+	block_bitmap[bitmap_size - 1] = 1 << 7;
+	if (write(fd, &block_bitmap, bitmap_size) != bitmap_size)
 	{
 		errno_exit("write");
 	}
 
 	u8 padding[BLOCK_SIZE - (NUM_BLOCKS / 8)] = {0};
-	ssize_t pad_size = sizeof(padding);
-	memset(padding, 0xFF, pad_size);
-	if (write(fd, &padding, pad_size) != pad_size)
+	ssize_t padding_size = sizeof(padding);
+	memset(padding, 0xFF, padding_size);
+
+	if (write(fd, &padding, padding_size) != padding_size)
 	{
 		errno_exit("write");
 	}
@@ -340,16 +342,17 @@ void write_inode_bitmap(int fd)
 		inode_bitmap[i / 8] |= 1 << (i % 8);
 	}
 
-	ssize_t size = sizeof(inode_bitmap);
-	if (write(fd, &inode_bitmap, size) != size)
+	ssize_t bitmap_size = sizeof(inode_bitmap);
+	if (write(fd, &inode_bitmap, bitmap_size) != bitmap_size)
 	{
 		errno_exit("write");
 	}
 
 	u8 padding[BLOCK_SIZE - (NUM_INODES / 8)] = {0};
-	ssize_t pad_size = sizeof(padding);
-	memset(padding, 0xFF, pad_size);
-	if (write(fd, &padding, pad_size) != pad_size)
+	ssize_t padding_size = sizeof(padding);
+	memset(padding, 0xFF, padding_size);
+
+	if (write(fd, &padding, padding_size) != padding_size)
 	{
 		errno_exit("write");
 	}
@@ -435,10 +438,15 @@ void write_inode_table(int fd)
 	hello_inode.i_links_count = 1;
 	hello_inode.i_blocks = 0; /* These are oddly 512 blocks */
 
-	// hello-world in bytes is 68 65 6c 6c 6f 2d 77 6f 72 6c 64
-	hello_inode.i_block[0] = 0x68656c6c;
-	hello_inode.i_block[1] = 0x6f2d776f;
-	hello_inode.i_block[2] = 0x726c64;
+	// hello-world in bytes is 68 65 6c 6c 6f s2d 77 6f 72 6c 64
+	// hello_inode.i_block[0] = 0x68656c6c;
+	// hello_inode.i_block[1] = 0x6f2d776f;
+	// hello_inode.i_block[2] = 0x726c64;
+	// reverse the bytes because of the endian
+	hello_inode.i_block[0] = 0x6C6C6568;
+	hello_inode.i_block[1] = 0x6F772D6F;
+	hello_inode.i_block[2] = 0x00646C72;
+	strcpy((char *)&hello_inode.i_block, "hello-world");
 	write_inode(fd, HELLO_INO, &hello_inode);
 }
 
